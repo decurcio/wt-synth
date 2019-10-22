@@ -9,8 +9,9 @@ void init_DDS(short* samples) {
     }
 }
 
-void DDS(void *DDS_data_array, short *wavetable, short* samples) {
+void DDS(void *DDS_data_array, void *USB_data_array, short *wavetable, short* samples) {
     DDS_data *dds_data = DDS_data_array;
+    USB_data *usb_data = USB_data_array;
     //Loop to calculate PERIOD_SAMPLES number of samples
     for(int i = 0; i < PERIOD_SAMPLES; i++) {
         int currentSample = 0;
