@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     //USB note information buffer setup
     for(int i = 0; i < TOTAL_NUMBER_NOTES; i++) {
         USB_data_array[i].midi_note = -1;
-        USB_data_array[i].accumulation_vector = 0;
+        USB_data_array[i].attenuation_vector = 0;
         USB_data_array[i].age = 0;
     }
 

@@ -96,7 +96,8 @@ void *usb(void *args)
 					//disable that note
 					USB_data[i].midi_note = -1;
 					//loop through dds_data disabling those harmonics
-					for(int k = (i * currentInstrument.numHarmonics); k < ((i + 1) * currentInstrument.numHarmonics); k++) {
+					for (int k = (i * currentInstrument.numHarmonics); k < ((i + 1) * currentInstrument.numHarmonics); k++)
+					{
 						data[k].enable = 0;
 					}
 					int currentNoteAge = USB_data[i].age;
@@ -148,10 +149,12 @@ void *usb(void *args)
 				//printf("REPLACE THE OLDEST AT: %i\n", oldestNote);
 				slot = oldestNote;
 				USB_data[oldestNote].midi_note = key_int;
-				USB_data[oldestNote].accumulation_vector = 0;
+				USB_data[oldestNote].attenuation_vector = 0;
 				USB_data[oldestNote].age = numNotesBeingPlayed;
-				for(int k = 0; k < TOTAL_NUMBER_NOTES; k++) {
-					if(k != slot) {
+				for (int k = 0; k < TOTAL_NUMBER_NOTES; k++)
+				{
+					if (k != slot)
+					{
 						USB_data[k].age--;
 					}
 				}
@@ -162,7 +165,7 @@ void *usb(void *args)
 				//printf("REPLACE OPEN SLOT AT: %i\n", openNoteSlot);
 				slot = openNoteSlot;
 				USB_data[openNoteSlot].midi_note = key_int;
-				USB_data[openNoteSlot].accumulation_vector = 0;
+				USB_data[openNoteSlot].attenuation_vector = 0;
 				USB_data[openNoteSlot].age = ++numNotesBeingPlayed;
 			}
 			//printf("SLOT NUMBER %i\n", slot);
