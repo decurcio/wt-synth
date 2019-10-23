@@ -28,7 +28,7 @@ void DDS(void *DDS_data_array, void *USB_data_array, short *wavetable, short *sa
         } else if(current_attenuation_vector < 88200) {
             attenuation_multiple = (float)((current_attenuation_vector - 44100) * 0.00002267); 
         } else {
-            current_attenuation_vector = 0.0;
+            attenuation_multiple = 0.0;
         }
         //loop through the accumulator register, calculating new lookup values
         //Calculate the current sample from looked up samples and attenuations
@@ -43,7 +43,7 @@ void DDS(void *DDS_data_array, void *USB_data_array, short *wavetable, short *sa
                 currentSample += wavetable[accumulators[j]] * dds_data[j].attenuate;
             }
         }
-        samples[i] = (short)currentSample;
+        samples[i] = (short)((float)currentSample * attenuation_multiple);
     }
 
 } /* DDS */
