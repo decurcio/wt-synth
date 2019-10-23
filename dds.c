@@ -19,6 +19,17 @@ void DDS(void *DDS_data_array, void *USB_data_array, short *wavetable, short *sa
     for (int i = 0; i < PERIOD_SAMPLES; i++)
     {
         int currentSample = 0;
+        //increment the note's attenuation vector
+        int current_attenuation_vector = usb_data->attenuation_vector += 1;
+        float attenuation_multiple = 1.0;
+        //Determine the attenuation factor based on the attenuation vector
+        if(current_attenuation_vector < 44100) {
+            attenuation_multiple = 1.0;
+        } else if(current_attenuation_vector < 88200) {
+            attenuation_multiple = (float)((current_attenuation_vector - 44100) * 0.00002267); 
+        } else {
+            current_attenuation_vector = 0.0;
+        }
         //loop through the accumulator register, calculating new lookup values
         //Calculate the current sample from looked up samples and attenuations
         for (int j = 0; j < TOTAL_NUMBER_FREQUENCIES; j++)
@@ -29,7 +40,7 @@ void DDS(void *DDS_data_array, void *USB_data_array, short *wavetable, short *sa
             {
                 //if note is enabled, currentSample += wavetable lookup
                 //bitwise anded with attenuation factor
-                currentSample += wavetable[accumulators[j]] * (dds_data[j].attenuate - ATTENUATE_FACTOR);
+                currentSample += wavetable[accumulators[j]] * dds_data[j].attenuate;
             }
         }
         samples[i] = (short)currentSample;
