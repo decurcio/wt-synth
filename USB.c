@@ -26,12 +26,12 @@ void *usb(void *args)
 	DDS_data *data = USB_args->data;							//The dds data struct. Is an array of frequency information
 	USB_data *USB_data = USB_args->usb_data_array;				//The usb data struct. stores information on midi notes
 	instrument *instrumentArray = *(USB_args->instrumentArray); //Instrument array. Stores all the instruments read in
-	instrument currentInstrument;								//The currently selected instrument
+	instrument *currentInstrument = USB_args->currentInstrument;								//The currently selected instrument
 	int numberInstruments = USB_args->numberInstruments;		//The total number of instruments from the config file
 
 	//The default instrument is 0
-	currentInstrument = instrumentArray[0];
-	printf("Current instrument: %s\n", currentInstrument.name);
+	*currentInstrument = instrumentArray[0];
+	printf("Current instrument: %s\n", currentInstrument->name);
 	//The current number of notes being played
 	int numNotesBeingPlayed = 0;
 	char *buffer;
@@ -96,7 +96,7 @@ void *usb(void *args)
 					//disable that note
 					USB_data[i].midi_note = -1;
 					//loop through dds_data disabling those harmonics
-					for (int k = (i * currentInstrument.numHarmonics); k < ((i + 1) * currentInstrument.numHarmonics); k++)
+					for (int k = (i * currentInstrument->numHarmonics); k < ((i + 1) * currentInstrument->numHarmonics); k++)
 					{
 						data[k].enable = 0;
 					}
@@ -172,13 +172,13 @@ void *usb(void *args)
 			//printf("NUM CURRENT NOTES: %i\n", numNotesBeingPlayed);
 			//loop through the harmonics of the instrument at the location
 			//of the corresponding note's bucket in the DDS data array
-			int DDS_data_bucket_location = (currentInstrument.numHarmonics * slot);
-			for (int i = DDS_data_bucket_location; i < DDS_data_bucket_location + currentInstrument.numHarmonics; i++)
+			int DDS_data_bucket_location = (currentInstrument->numHarmonics * slot);
+			for (int i = DDS_data_bucket_location; i < DDS_data_bucket_location + currentInstrument->numHarmonics; i++)
 			{
 				int currentHarmonic = i - DDS_data_bucket_location;
-				data[i].tuning_word = (int)((float)tuning_lookup[key_int] * currentInstrument.harmonicMultiples[currentHarmonic]);
+				data[i].tuning_word = (int)((float)tuning_lookup[key_int] * currentInstrument->harmonicMultiples[currentHarmonic]);
 				//fprintf(stderr, "%i\n", data[i].tuning_word);
-				data[i].attenuate = currentInstrument.attenuationMultiples[currentHarmonic];
+				data[i].attenuate = currentInstrument->attenuationMultiples[currentHarmonic];
 				data[i].enable = 1;
 				//printf("BUCKET LOCATION: %i, TUNING WORD: %i\n", i, data[i].tuning_word);
 			}
@@ -243,9 +243,9 @@ void *usb(void *args)
 				{
 					//The current instrument matches the selected note
 					instrumentFound = 1;
-					currentInstrument = instrumentArray[currentInstrumentIndex];
+					*currentInstrument = instrumentArray[currentInstrumentIndex];
 					printf("SELECTING INSTRUMENT %i\n", currentInstrumentIndex);
-					printf("INSTRUMENT: %s\n", currentInstrument.name);
+					printf("INSTRUMENT: %s\n", currentInstrument->name);
 					break;
 				}
 				currentInstrumentIndex++;
@@ -254,9 +254,9 @@ void *usb(void *args)
 			{
 				//The instrument has not been found, default to a sine wave
 				printf("INSTRUMENT NOT FOUND, DEFAULT TO SINE WAVE");
-				currentInstrument.numHarmonics = 1;
-				currentInstrument.harmonicMultiples[0] = 1;
-				currentInstrument.attenuationMultiples[0] = 1;
+				currentInstrument->numHarmonics = 1;
+				currentInstrument->harmonicMultiples[0] = 1;
+				currentInstrument->attenuationMultiples[0] = 1;
 			}
 			config_mode = 0;
 			numNotesBeingPlayed = 0;

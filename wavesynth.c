@@ -43,6 +43,7 @@ int main(int argc, char *argv[]) {
         USB_data_array[i].age = 0;
     }
 
+    currentInstrument = instrumentArray[0];
     pthread_t thread_id;
     USB_thread_args USB_args;
     USB_args.data = DDS_data_array;
