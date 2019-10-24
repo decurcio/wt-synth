@@ -57,7 +57,7 @@ void DDS(void *DDS_data_array, void *USB_data_array, instrument *currentInstrume
     }
 }
 
-    /*
+/*
         //increment the note's attenuation vector
         int current_attenuation_vector = usb_data->attenuation_vector += 1;
         float attenuation_multiple = 1.0;
