@@ -15,27 +15,34 @@ void DDS(void *DDS_data_array, void *USB_data_array, instrument *currentInstrume
 {
     DDS_data *dds_data = DDS_data_array;
     USB_data *usb_data = USB_data_array;
-    
+
     //Loop to calculate PERIOD_SAMPLES number of samples
     for (int i = 0; i < PERIOD_SAMPLES; i++)
     {
         int currentSample = 0;
         //Loop through each note separately
-        for(int current_note = 0; current_note < TOTAL_NUMBER_NOTES; current_note++) {
+        for (int current_note = 0; current_note < TOTAL_NUMBER_NOTES; current_note++)
+        {
             //get this notes attenuation vector
             int current_attenuation_vector = usb_data[current_note].attenuation_vector += 1;
             float attenuation_multiple = 1.0;
             //Determine the attenuation factor based on the attenuation vector
-            if(current_attenuation_vector < 44100) {
+            if (current_attenuation_vector < 44100)
+            {
                 attenuation_multiple = 1.0;
-            } else if(current_attenuation_vector < 88200) {
-                attenuation_multiple = 1 - (float)((current_attenuation_vector - 44100) * 0.00002267); 
-            } else {
+            }
+            else if (current_attenuation_vector < 88200)
+            {
+                attenuation_multiple = 1 - (float)((current_attenuation_vector - 44100) * 0.00002267);
+            }
+            else
+            {
                 attenuation_multiple = 0.0;
             }
 
             //Loop through the accumulators for those notes
-            for(int current_accumulator = (current_note * currentInstrument->numHarmonics); current_accumulator < ((current_note + 1) * currentInstrument->numHarmonics);current_accumulator++) {
+            for (int current_accumulator = (current_note * currentInstrument->numHarmonics); current_accumulator < ((current_note + 1) * currentInstrument->numHarmonics); current_accumulator++)
+            {
                 accumulators[current_accumulator] += dds_data[current_accumulator].tuning_word;
                 accumulators[current_accumulator] = (accumulators[current_accumulator] > WAVETABLE_LENGTH) ? accumulators[current_accumulator] -= WAVETABLE_LENGTH : accumulators[current_accumulator];
                 if (dds_data[current_accumulator].enable)
@@ -45,12 +52,12 @@ void DDS(void *DDS_data_array, void *USB_data_array, instrument *currentInstrume
                     currentSample += wavetable[accumulators[current_accumulator]] * dds_data[current_accumulator].attenuate;
                 }
             }
-        samples[i] += (short)((float)currentSample * attenuation_multiple);
+            samples[i] += (short)((float)currentSample * attenuation_multiple);
         }
+    }
+}
 
-
-
-        /*
+    /*
         //increment the note's attenuation vector
         int current_attenuation_vector = usb_data->attenuation_vector += 1;
         float attenuation_multiple = 1.0;
@@ -77,6 +84,5 @@ void DDS(void *DDS_data_array, void *USB_data_array, instrument *currentInstrume
         }
         samples[i] = (short)((float)currentSample * attenuation_multiple);
     }
-    */
 
 } /* DDS */
