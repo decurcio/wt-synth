@@ -11,7 +11,7 @@ void init_DDS(short *samples)
     }
 }
 float ATTENUATE_FACTOR = 0.125;
-void DDS(void *DDS_data_array, void *USB_data_array, instrument *currentInstrument, short *wavetable, short *samples)
+void DDS(void *DDS_data_array, void *USB_data_array, instrument currentInstrument, short *wavetable, short *samples)
 {
     DDS_data *dds_data = DDS_data_array;
     USB_data *usb_data = USB_data_array;
@@ -41,7 +41,7 @@ void DDS(void *DDS_data_array, void *USB_data_array, instrument *currentInstrume
             }
 
             //Loop through the accumulators for those notes
-            for (int current_accumulator = (current_note * currentInstrument->numHarmonics); current_accumulator < ((current_note + 1) * currentInstrument->numHarmonics); current_accumulator++)
+            for (int current_accumulator = (current_note * currentInstrument.numHarmonics); current_accumulator < ((current_note + 1) * currentInstrument.numHarmonics); current_accumulator++)
             {
                 accumulators[current_accumulator] += dds_data[current_accumulator].tuning_word;
                 accumulators[current_accumulator] = (accumulators[current_accumulator] > WAVETABLE_LENGTH) ? accumulators[current_accumulator] -= WAVETABLE_LENGTH : accumulators[current_accumulator];

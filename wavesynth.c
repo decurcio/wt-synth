@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
     while(1) {
         if(dds_flag) {
             dds_flag = 0;
-            DDS(DDS_data_array, USB_data_array, &currentInstrument, wavetable, samples);
+            DDS(DDS_data_array, USB_data_array, currentInstrument, wavetable, samples);
         }
 	process_callback();
     }
