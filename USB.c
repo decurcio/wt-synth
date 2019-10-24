@@ -31,7 +31,7 @@ void *usb(void *args)
 
 	//The default instrument is 0
 	currentInstrument = instrumentArray[0];
-
+	printf("Current instrument: %s\n", currentInstrument.name);
 	//The current number of notes being played
 	int numNotesBeingPlayed = 0;
 	char *buffer;
@@ -245,6 +245,7 @@ void *usb(void *args)
 					instrumentFound = 1;
 					currentInstrument = instrumentArray[currentInstrumentIndex];
 					printf("SELECTING INSTRUMENT %i\n", currentInstrumentIndex);
+					printf("INSTRUMENT: %s\n", currentInstrument.name);
 					break;
 				}
 				currentInstrumentIndex++;

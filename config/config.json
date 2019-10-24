@@ -1,5 +1,5 @@
 {
-  "instrument1": {
+  "Piano (Non-Integer)": {
       "attenuationvector1": 1,
       "num_harmonics1": 12,
       "midiValue": 48,
@@ -32,7 +32,7 @@
         0.0078125
       ]
   },
-  "instrument2": {
+  "3 Harmonics": {
       "attenuationvector1": 1,
       "num_harmonics1": 3,
       "midiValue": 50,
@@ -47,7 +47,7 @@
         0.015625
       ]
   },
-  "instrument3": {
+  "Piano (Integer)": {
       "attenuationvector1": 1,
       "num_harmonics1": 11,
       "midiValue": 52,
@@ -80,7 +80,7 @@
         0.0078125
       ]
   },
-  "instrument4": {
+  "Cello (Maybe)": {
       "attenuationvector1": 1,
       "num_harmonics1": 30,
       "midiValue": 54,
@@ -149,7 +149,7 @@
         0.0009765625
       ]
   },
-  "instrument5": {
+  "Clarinet (Maybe)": {
       "attenuationvector1": 1,
       "num_harmonics1": 33,
       "midiValue": 56,

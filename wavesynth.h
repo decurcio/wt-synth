@@ -1,6 +1,6 @@
 #ifndef SYNTHESIZER
 #define SYNTHESIZER
-
+#include <string.h>
 //Definitions
 #define TOTAL_NUMBER_FREQUENCIES 120 //Total number of frequencies possible
 #define TOTAL_NUMBER_NOTES 10		 //Total number of notes that can be played at once
@@ -28,6 +28,7 @@ typedef struct
 typedef struct
 {
 	//Instrument struct; holds the data for one instrument
+	char * name;
 	int attenuationVector;
 	int numHarmonics;
 	int midiValue;

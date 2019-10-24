@@ -81,6 +81,7 @@ int createInstrumentArray(int *numberInstruments, instrument **instrumentArray)
                 json_value *currentInstrument = value->u.object.values[i].value;
                 //Temporary pointer
                 //Get the attenuation vector of the current instrument
+                tempInstrumentArray[i].name = value->u.object.values[i].name;
                 tempInstrumentArray[i].attenuationVector = currentInstrument->u.object.values[0].value->u.integer;
                 //Get the number of harmonics this instrument has
                 tempInstrumentArray[i].numHarmonics = currentInstrument->u.object.values[1].value->u.integer;
