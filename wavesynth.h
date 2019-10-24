@@ -42,7 +42,9 @@ typedef struct
 	DDS_data *data;
 	USB_data *usb_data_array;
 	instrument **instrumentArray;
+	instrument *currentInstrument;
 	int numberInstruments;
+
 } USB_thread_args;
 //Function declarations
 void *usb(void *args);
