@@ -26,7 +26,7 @@ void DDS(void *DDS_data_array, void *USB_data_array, short *wavetable, short *sa
         if(current_attenuation_vector < 44100) {
             attenuation_multiple = 1.0;
         } else if(current_attenuation_vector < 88200) {
-            attenuation_multiple = (float)((current_attenuation_vector - 44100) * 0.00002267); 
+            attenuation_multiple = 1 - (float)((current_attenuation_vector - 44100) * 0.00002267); 
         } else {
             attenuation_multiple = 0.0;
         }
