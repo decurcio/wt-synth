@@ -81,7 +81,7 @@ int createInstrumentArray(int *numberInstruments, instrument **instrumentArray)
                 json_value *currentInstrument = value->u.object.values[i].value;
                 //Temporary pointer
                 //Get the name of the insturment
-                tempInstrumentArray[i].name = (char *) malloc(sizeof(char) * value->u.object.values[i].name_length);
+                tempInstrumentArray[i].name = (char *)malloc(sizeof(char) * value->u.object.values[i].name_length);
                 strcpy(tempInstrumentArray[i].name, value->u.object.values[i].name);
                 //Get the attenuation vector of the current instrument
                 tempInstrumentArray[i].attenuationVector = currentInstrument->u.object.values[0].value->u.integer;

@@ -8,6 +8,14 @@
 #define WAVETABLE_LENGTH (16777216)  // Length
 #define PERIOD_SAMPLES (64)			 //number of samples per period, mono
 
+enum note_state
+{
+	off,
+	A,
+	D,
+	S,
+	R
+};
 //Data structures
 typedef struct
 {
@@ -16,19 +24,19 @@ typedef struct
 	float attenuate;
 	char enable;
 } DDS_data;
-
 typedef struct
 {
 	//USB data struct; holds information for 1 midi note
 	int midi_note;
 	int attenuation_vector;
 	int age;
+	enum note_state state;
 } USB_data;
 
 typedef struct
 {
 	//Instrument struct; holds the data for one instrument
-	char * name;
+	char *name;
 	int attenuationVector;
 	int numHarmonics;
 	int midiValue;

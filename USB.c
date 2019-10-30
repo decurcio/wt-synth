@@ -22,12 +22,12 @@ int config_buffer_ptr = 0;
 void *usb(void *args)
 {
 	//Get the data from the void*
-	USB_thread_args *USB_args = (USB_thread_args *)args;		//Get the arguments that are passed in
-	DDS_data *data = USB_args->data;							//The dds data struct. Is an array of frequency information
-	USB_data *USB_data = USB_args->usb_data_array;				//The usb data struct. stores information on midi notes
-	instrument *instrumentArray = *(USB_args->instrumentArray); //Instrument array. Stores all the instruments read in
-	instrument *currentInstrument = USB_args->currentInstrument;								//The currently selected instrument
-	int numberInstruments = USB_args->numberInstruments;		//The total number of instruments from the config file
+	USB_thread_args *USB_args = (USB_thread_args *)args;		 //Get the arguments that are passed in
+	DDS_data *data = USB_args->data;							 //The dds data struct. Is an array of frequency information
+	USB_data *USB_data = USB_args->usb_data_array;				 //The usb data struct. stores information on midi notes
+	instrument *instrumentArray = *(USB_args->instrumentArray);  //Instrument array. Stores all the instruments read in
+	instrument *currentInstrument = USB_args->currentInstrument; //The currently selected instrument
+	int numberInstruments = USB_args->numberInstruments;		 //The total number of instruments from the config file
 
 	//The default instrument is 0
 	*currentInstrument = instrumentArray[0];
@@ -96,10 +96,12 @@ void *usb(void *args)
 					//disable that note
 					USB_data[i].midi_note = -1;
 					//loop through dds_data disabling those harmonics
+					/*
 					for (int k = (i * currentInstrument->numHarmonics); k < ((i + 1) * currentInstrument->numHarmonics); k++)
 					{
 						data[k].enable = 0;
 					}
+					*/
 					int currentNoteAge = USB_data[i].age;
 					//loop through all the notes and decrement any with an age newer than the current one
 					for (int j = 0; j < TOTAL_NUMBER_NOTES; j++)
@@ -111,6 +113,7 @@ void *usb(void *args)
 					}
 					USB_data[i].age = 0;
 					--numNotesBeingPlayed;
+					USB_data[i].state = R;
 					//printf("NUM CURRENT NOTES: %i\n", numNotesBeingPlayed);
 					//printf("MIDI VALUE: %i\n", USB_data[i].midi_note);
 				}
@@ -127,7 +130,7 @@ void *usb(void *args)
 			int oldestNote = 0;
 			while (openNoteSlot < TOTAL_NUMBER_NOTES)
 			{
-				if (USB_data[openNoteSlot].age == 0)
+				if (USB_data[openNoteSlot].state == off)
 				{
 					//Found an open slot
 					//printf("OPEN SLOT: %i\n", openNoteSlot);
@@ -151,6 +154,7 @@ void *usb(void *args)
 				USB_data[oldestNote].midi_note = key_int;
 				USB_data[oldestNote].attenuation_vector = 0;
 				USB_data[oldestNote].age = numNotesBeingPlayed;
+				USB_data[oldestNote].state = A;
 				for (int k = 0; k < TOTAL_NUMBER_NOTES; k++)
 				{
 					if (k != slot)
@@ -167,6 +171,7 @@ void *usb(void *args)
 				USB_data[openNoteSlot].midi_note = key_int;
 				USB_data[openNoteSlot].attenuation_vector = 0;
 				USB_data[openNoteSlot].age = ++numNotesBeingPlayed;
+				USB_data[openNoteSlot].state = A;
 			}
 			//printf("SLOT NUMBER %i\n", slot);
 			//printf("NUM CURRENT NOTES: %i\n", numNotesBeingPlayed);
