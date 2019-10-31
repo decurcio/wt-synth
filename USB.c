@@ -124,7 +124,9 @@ void *usb(void *args)
 		{
 			printf("NOTE ON COMMAND\n");
 			//fprintf(stderr, "NUM HARMONICS: %i\n", currentInstrument.numHarmonics);
-
+			
+			//Calculate the velocity multiple 
+			float velocity_multiple = (float)velocity_int / 127.0;
 			//Find either an open slot or the oldest (lowest age)
 			int openNoteSlot = 0;
 			int oldestNote = 0;
@@ -183,7 +185,7 @@ void *usb(void *args)
 				int currentHarmonic = i - DDS_data_bucket_location;
 				data[i].tuning_word = (int)((float)tuning_lookup[key_int] * currentInstrument->harmonicMultiples[currentHarmonic]);
 				//fprintf(stderr, "%i\n", data[i].tuning_word);
-				data[i].attenuate = currentInstrument->attenuationMultiples[currentHarmonic];
+				data[i].attenuate = currentInstrument->attenuationMultiples[currentHarmonic] * velocity_multiple;
 				data[i].enable = 1;
 				//printf("BUCKET LOCATION: %i, TUNING WORD: %i\n", i, data[i].tuning_word);
 			}
