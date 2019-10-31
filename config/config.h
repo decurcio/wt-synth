@@ -4,6 +4,6 @@
 #include "../wavesynth.h"
 
 void init_wavetable(short **);
-int createInstrumentArray(int *, instrument ** );
+int createInstrumentArray(int *, instrument **);
 
 #endif

@@ -18,8 +18,6 @@ extern int note_buffer_ptr;
 extern int config_buffer[4];
 extern int config_buffer_ptr;
 
+void *usb(void *);
 
-void *usb(void* );
-
-#endif 
-
+#endif

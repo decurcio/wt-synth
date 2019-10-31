@@ -5,45 +5,50 @@
 #include "config.h"
 #include "../libs/json.h"
 
+void init_wavetable(short **wavetable)
+{
 
-void init_wavetable(short** wavetable) {
-
-    *wavetable = malloc(SAMPLE_WIDTH * WAVETABLE_LENGTH);
-    FILE *LUT_File;
-    LUT_File = fopen("./wavetable_sine.bin", "rb"); // open file stream
-    fread(*wavetable, SAMPLE_WIDTH, WAVETABLE_LENGTH, LUT_File);
+        *wavetable = malloc(SAMPLE_WIDTH * WAVETABLE_LENGTH);
+        FILE *LUT_File;
+        LUT_File = fopen("./wavetable_sine.bin", "rb"); // open file stream
+        fread(*wavetable, SAMPLE_WIDTH, WAVETABLE_LENGTH, LUT_File);
 }
 
-int createInstrumentArray(int *numberInstruments, instrument ** instrumentArray) {
-        char* filename;
+int createInstrumentArray(int *numberInstruments, instrument **instrumentArray)
+{
+        char *filename;
         FILE *fp;
         struct stat filestatus;
         int file_size;
-        char* file_contents;
-        json_char* json;
-        json_value* value;
+        char *file_contents;
+        json_char *json;
+        json_value *value;
 
         filename = "config/config.json";
 
-        if ( stat(filename, &filestatus) != 0) {
+        if (stat(filename, &filestatus) != 0)
+        {
                 fprintf(stderr, "File %s not found\n", filename);
                 return 1;
         }
         file_size = filestatus.st_size;
-        file_contents = (char*)malloc(filestatus.st_size);
-        if ( file_contents == NULL) {
+        file_contents = (char *)malloc(filestatus.st_size);
+        if (file_contents == NULL)
+        {
                 fprintf(stderr, "Memory error: unable to allocate %d bytes\n", file_size);
                 return 1;
         }
 
         fp = fopen(filename, "rt");
-        if (fp == NULL) {
+        if (fp == NULL)
+        {
                 fprintf(stderr, "Unable to open %s\n", filename);
                 fclose(fp);
                 free(file_contents);
                 return 1;
         }
-        if ( fread(file_contents, file_size, 1, fp) != 1 ) {
+        if (fread(file_contents, file_size, 1, fp) != 1)
+        {
                 fprintf(stderr, "Unable t read content of %s\n", filename);
                 fclose(fp);
                 free(file_contents);
@@ -55,11 +60,12 @@ int createInstrumentArray(int *numberInstruments, instrument ** instrumentArray)
 
         printf("--------------------------------\n\n");
 
-        json = (json_char*)file_contents;
+        json = (json_char *)file_contents;
 
-        value = json_parse(json,file_size);
+        value = json_parse(json, file_size);
 
-        if (value == NULL) {
+        if (value == NULL)
+        {
                 fprintf(stderr, "Unable to parse data\n");
                 free(file_contents);
                 exit(1);
@@ -69,10 +75,14 @@ int createInstrumentArray(int *numberInstruments, instrument ** instrumentArray)
         int totalInstruments = value->u.object.length;
         instrument *tempInstrumentArray = malloc(sizeof(instrument) * totalInstruments);
         //Get the current instrument json object
-        for(int i = 0; i < totalInstruments; i++) {
+        for (int i = 0; i < totalInstruments; i++)
+        {
                 //Create a temporary instrument to stroe the values in
-                json_value * currentInstrument = value->u.object.values[i].value;
+                json_value *currentInstrument = value->u.object.values[i].value;
                 //Temporary pointer
+                //Get the name of the insturment
+                tempInstrumentArray[i].name = (char *)malloc(sizeof(char) * value->u.object.values[i].name_length);
+                strcpy(tempInstrumentArray[i].name, value->u.object.values[i].name);
                 //Get the attenuation vector of the current instrument
                 tempInstrumentArray[i].attenuationVector = currentInstrument->u.object.values[0].value->u.integer;
                 //Get the number of harmonics this instrument has
@@ -80,13 +90,14 @@ int createInstrumentArray(int *numberInstruments, instrument ** instrumentArray)
                 tempInstrumentArray[i].midiValue = currentInstrument->u.object.values[2].value->u.integer;
 
                 //instantiate the memory for the harmonics and attenuations for the current instrument
-                tempInstrumentArray[i].harmonicMultiples    = malloc(tempInstrumentArray[i].numHarmonics * sizeof(float));
+                tempInstrumentArray[i].harmonicMultiples = malloc(tempInstrumentArray[i].numHarmonics * sizeof(float));
                 tempInstrumentArray[i].attenuationMultiples = malloc(tempInstrumentArray[i].numHarmonics * sizeof(float));
 
                 //Loop through the number of harmonics and get the values for harmonicMultiple and attenuationMultiple
-                for(int j = 0; j < tempInstrumentArray[i].numHarmonics; j++) {
+                for (int j = 0; j < tempInstrumentArray[i].numHarmonics; j++)
+                {
                         tempInstrumentArray[i].harmonicMultiples[j] = (float)currentInstrument->u.object.values[3].value->u.array.values[j]->u.dbl;
-                        tempInstrumentArray[i].attenuationMultiples[j] = (short)currentInstrument->u.object.values[4].value->u.array.values[j]->u.integer;
+                        tempInstrumentArray[i].attenuationMultiples[j] = (float)currentInstrument->u.object.values[4].value->u.array.values[j]->u.dbl;
                 }
         }
 
