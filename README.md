@@ -1,4 +1,4 @@
-# wt-synth
+# WaveSynth
 ## Open Source, Wavetable Synthesizer
 
 # Introduction 
