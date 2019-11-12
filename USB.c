@@ -16,8 +16,8 @@ int tuning_lookup[] = {
 
 int note_buffer[TOTAL_NUMBER_FREQUENCIES];
 int note_buffer_ptr = 0;
-int config_buffer[4];
-int config_buffer_ptr = 0;
+int config_note = 0;
+int config_note_pressed = 0;
 
 void *usb(void *args)
 {
@@ -124,8 +124,8 @@ void *usb(void *args)
 		{
 			printf("NOTE ON COMMAND\n");
 			//fprintf(stderr, "NUM HARMONICS: %i\n", currentInstrument.numHarmonics);
-			
-			//Calculate the velocity multiple 
+
+			//Calculate the velocity multiple
 			float velocity_multiple = (float)velocity_int / 127.0;
 			//Find either an open slot or the oldest (lowest age)
 			int openNoteSlot = 0;
@@ -190,52 +190,30 @@ void *usb(void *args)
 				//printf("BUCKET LOCATION: %i, TUNING WORD: %i\n", i, data[i].tuning_word);
 			}
 
-			if (key_int == 53 || key_int == 55 || key_int == 83 || key_int == 84)
+			if (key_int == config_note)
 			{
-				if (config_buffer_ptr < 4)
+				//Maybe trying to enter config mode. Increment the config mode key counter.
+				if (config_note_pressed < 4)
 				{
-					config_buffer[config_buffer_ptr] = key_int;
-					config_buffer_ptr++;
+					config_note_pressed++;
 				}
 			}
 			else
 			{
-				config_buffer_ptr = 0;
-				config_buffer[0] = 0;
-				config_buffer[1] = 0;
-				config_buffer[2] = 0;
-				config_buffer[3] = 0;
+				//Not trying to enter config mode
+				config_note_pressed = 0;
 			}
-			if (config_buffer_ptr >= 4)
+			if (config_note_pressed == 4)
 			{
-				if (config_buffer[0] == 53 || config_buffer[0] == 55 || config_buffer[0] == 83 || config_buffer[0] == 84)
+				//Pressed the config key 4 times. stop playing and enter config mode.
+				config_mode = 1;
+				printf("CONFIG MODE ENTERED\n");
+				for (int i = 0; i < TOTAL_NUMBER_FREQUENCIES; i++)
 				{
-					fprintf(stderr, "NOTE 0: %i\n", config_buffer[0]);
-					if (config_buffer[1] == 53 || config_buffer[1] == 55 || config_buffer[1] == 83 || config_buffer[1] == 84)
-					{
-						fprintf(stderr, "NOTE 1: %i\n", config_buffer[1]);
-						if (config_buffer[2] == 53 || config_buffer[2] == 55 || config_buffer[2] == 83 || config_buffer[2] == 84)
-						{
-							fprintf(stderr, "NOTE 2: %i\n", config_buffer[2]);
-							if (config_buffer[3] == 53 || config_buffer[3] == 55 || config_buffer[3] == 83 || config_buffer[3] == 84)
-							{
-								fprintf(stderr, "NOTE 3: %i\n", config_buffer[3]);
-								config_mode = 1;
-								printf("CONFIG MODE ENTERED\n");
-								for (int i = 0; i < TOTAL_NUMBER_FREQUENCIES; i++)
-								{
-									data[i].enable = 0;
-									//fprintf(stderr, "%i disabled\n", i);
-								}
-							}
-						}
-					}
+					data[i].enable = 0;
+					//fprintf(stderr, "%i disabled\n", i);
 				}
-				config_buffer_ptr = 0;
-				config_buffer[0] = 0;
-				config_buffer[1] = 0;
-				config_buffer[2] = 0;
-				config_buffer[3] = 0;
+				config_note_pressed = 0;
 			}
 		}
 		else if (command_int == 144 && config_mode)
