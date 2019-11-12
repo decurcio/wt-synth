@@ -51,9 +51,27 @@ typedef struct
 	USB_data *usb_data_array;
 	instrument **instrumentArray;
 	instrument *currentInstrument;
+	Envelope *envelope;
 	int numberInstruments;
 
 } USB_thread_args;
+
+typedef struct
+{
+	//Cutoff values (number of samples)
+    int A_cutoff;
+    int D_cutoff;
+    int S_cutoff;
+    int R_cutoff;
+
+	float sustain_level;
+
+    //attenuation calculation values
+    float A_lerp_mult;
+    float D_lerp_mult;
+    float R_lerp_mult;
+} Envelope;
+
 //Function declarations
 void *usb(void *args);
 

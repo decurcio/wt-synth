@@ -27,8 +27,25 @@ void *usb(void *args)
 	USB_data *USB_data = USB_args->usb_data_array;				 //The usb data struct. stores information on midi notes
 	instrument *instrumentArray = *(USB_args->instrumentArray);  //Instrument array. Stores all the instruments read in
 	instrument *currentInstrument = USB_args->currentInstrument; //The currently selected instrument
+	Envelope *envelope = USB_args->envelope;
 	int numberInstruments = USB_args->numberInstruments;		 //The total number of instruments from the config file
 
+	Envelope envelope_array[3];
+	//initialize the envelope array values
+	//For now, have all of the initialized to the same default
+	for(int i = 0; i < 3; i++)
+	{
+		envelope_array[i].A_cutoff = 1000;
+		envelope_array[i].D_cutoff = envelope_array[i].A_cutoff + 1000;
+		envelope_array[i].S_cutoff = envelope_array[i].D_cutoff;
+		envelope_array[i].R_cutoff = envelope_array[i].D_cutoff + 8000;
+
+		envelope_array[i].sustain_level = 0.9;
+
+		envelope_array[i].A_lerp_mult = 1.0 / envelope_array[i].A_cutoff;
+		envelope_array[i].D_lerp_mult = 1.0 / (envelope_array[i].D_cutoff - envelope_array[i].A_cutoff);
+		envelope_array[i].R_lerp_mult = 1.0 / (envelope_array[i].R_cutoff - envelope_array[i].S_cutoff);
+	}
 	//The default instrument is 0
 	*currentInstrument = instrumentArray[0];
 	printf("Current instrument: %s\n", currentInstrument->name);
@@ -229,6 +246,8 @@ void *usb(void *args)
 					//The current instrument matches the selected note
 					instrumentFound = 1;
 					*currentInstrument = instrumentArray[currentInstrumentIndex];
+					*envelope = envelope_array[currentInstrument->attenuationVector];
+					
 					printf("SELECTING INSTRUMENT %i\n", currentInstrumentIndex);
 					printf("INSTRUMENT: %s\n", currentInstrument->name);
 					break;

@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
     instrument currentInstrument;
     DDS_data DDS_data_array[TOTAL_NUMBER_FREQUENCIES]; //DDS information buffer
     USB_data USB_data_array[TOTAL_NUMBER_NOTES];       //USB information buffer
+    Envelope Global_Envelope;
 
     init_wavetable(&wavetable);
     createInstrumentArray(&numberInstruments, &instrumentArray);
@@ -54,6 +55,7 @@ int main(int argc, char *argv[])
     USB_args.instrumentArray = &instrumentArray;
     USB_args.currentInstrument = &currentInstrument;
     USB_args.numberInstruments = numberInstruments;
+    USB_args.envelope = &Global_Envelope;
     pthread_create(&thread_id, NULL, usb, &USB_args);
     //start_audio_playback();
     while (1)
@@ -61,7 +63,7 @@ int main(int argc, char *argv[])
         if (dds_flag)
         {
             dds_flag = 0;
-            DDS(DDS_data_array, USB_data_array, currentInstrument.numHarmonics, wavetable, samples);
+            DDS(DDS_data_array, USB_data_array, currentInstrument.numHarmonics, wavetable, samples, &Global_Envelope);
         }
         process_callback();
     }

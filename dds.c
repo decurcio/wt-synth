@@ -11,21 +11,10 @@ void init_DDS(short *samples)
     }
 }
 float ATTENUATE_FACTOR = 0.125;
-void DDS(void *DDS_data_array, void *USB_data_array, int numHarmonics, short *wavetable, short *samples)
+void DDS(void *DDS_data_array, void *USB_data_array, int numHarmonics, short *wavetable, short *samples, Envelope *envelope)
 {
     DDS_data *dds_data = DDS_data_array;
     USB_data *usb_data = USB_data_array;
-
-    //attenuation cutoffs; will be determined by instrument attenuation value in the future.
-    int A_cutoff = 4000;
-    int D_cutoff = 48100;
-    int S_cutoff = D_cutoff;
-    int R_cutoff = D_cutoff + 44100;
-
-    //attenuation calculation values
-    float A_lerp_mult = 1.0 / A_cutoff;
-    float D_lerp_mult = 1.0 / (D_cutoff - A_cutoff);
-    float R_lerp_mult = 1.0 / (R_cutoff - S_cutoff);
     //Loop to calculate PERIOD_SAMPLES number of samples
     for (int i = 0; i < PERIOD_SAMPLES; i++)
     {
@@ -43,34 +32,34 @@ void DDS(void *DDS_data_array, void *USB_data_array, int numHarmonics, short *wa
             switch (usb_data[current_note].state)
             {
             case A:
-                if (++usb_data[current_note].attenuation_vector >= A_cutoff)
+                if (usb_data[current_note].attenuation_vector++ >= envelope->A_cutoff)
                 {
                     usb_data[current_note].state = D;
                 }
-                attenuation_multiple = (float)((usb_data[current_note].attenuation_vector) * A_lerp_mult);
+                attenuation_multiple = (float)((usb_data[current_note].attenuation_vector) * envelope->A_lerp_mult);
                 break;
 
             case D:
-                if (++usb_data[current_note].attenuation_vector >= D_cutoff)
+                if (usb_data[current_note].attenuation_vector++ >= envelope->D_cutoff)
                 {
                     usb_data[current_note].state = S;
                 }
-                x = (usb_data[current_note].attenuation_vector - A_cutoff) * D_lerp_mult;
-                attenuation_multiple = 0.9 * (1.0 - x) + 1.0 * (x);
+                x = (usb_data[current_note].attenuation_vector - envelope->A_cutoff) * envelope->D_lerp_mult;
+                attenuation_multiple = envelope->sustain_level * (1.0 - x) + 1.0 * (x);
                 break;
 
             case S:
-                attenuation_multiple = 0.9;
+                attenuation_multiple = envelope->sustain_level;
                 break;
             case R:
-                if (++usb_data[current_note].attenuation_vector >= R_cutoff)
+                if (usb_data[current_note].attenuation_vector++ >= envelope->R_cutoff)
                 {
                     usb_data[current_note].state = off;
                     note_done = 1;
                 }
                 //attenuation_multiple = 0.9 - (float)((usb_data[current_note].attenuation_vector - D_cutoff) * 0.00002267);
-                x = (usb_data[current_note].attenuation_vector - S_cutoff) * R_lerp_mult;
-                attenuation_multiple = 0.9 * (0.9 - x);
+                x = (usb_data[current_note].attenuation_vector - envelope->S_cutoff) * envelope->R_lerp_mult;
+                attenuation_multiple = envelope->sustain_level * (envelope->sustain_level - x);
                 break;
             }
             /*
