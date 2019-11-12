@@ -30,7 +30,6 @@ wt-synth creates an open source synthesizer that is cheap enough for ametour mus
 ## Pre-requisites 
 * Raspberry Pi with Raspian Installed - To install the OS Raspian, follow their instructions [here](https://www.raspberrypi.org/documentation/installation/).
 
-* 
 ### Installation Process
 
 1. The three main pieces of software this project requires are _Raspian_, a _GCC Compiler_, and _Python_.
@@ -45,19 +44,32 @@ When doing this from the terminal of the Pi, the command:
 `git clone [http address of source code]` 
 will download the code into the current directory you are in. 
 
+3. Install ALSA Asoundlib
+From the terminal of the Raspberry Pi, enter the following lines of code:
+`sudo apt-get install libsound2-dev`
+`sudo apt-get install libjack-jackd2-dev`
+This will give you both the files necessary to develop software using the ALSA library as well as a sound server that will allow multiple applications to connect to a single audio device.
 
-3. Install RTMidi for python file
-From the terminal of the Raspberry Pi, enter the following line of code:
-`$ pip install python-rtmidi`
-This will install RTMidi, which the Python file requires to run.
-
-4. Install ALSA Asoundlib
-From the terminal of the Raspberry Pu, enter the following line of code:
-`sudo apt-get install alsa-utils`
 This will prompt installation for the ALSA Asoundlib, which has been configured to process and output the sound of the project. It will prompt you to enter your root password and ask if you wish to continue. Affirming these will begin the installation.
+
+4. Install RTMidi for python file
+From the terminal of the Raspberry Pi, enter the following line of code:
+`$ pip3 install python-rtmidi`
+This will install RTMidi, which the Python file requires to run.
 
 5. If you have Make installed, you can run our project file with that to make an executable, 
 or
 You can enter:
 `gcc -g -o wavesynth wavesynth.c dds.c USB.c audio.c libs/json.c config/config.c -lpthread -lasound -lm`
-This will compile the project files and give you an executable `WaveSynth` to use our project! 
+followed by: 
+`chmod +x synth`
+This will compile the project files and give you an executable `WaveSynth` to run the project. The second line gives execute access to the script. 
+
+6. You can explicitly tell the Raspberry Pi to use the headphone jack via: 
+`sudo amixer cset numid=3 1`
+Additionally, you can change the volume of the pi with the command:
+`sudo amixer cset numid=1 ##%` 
+with `##` being the percent volume desired.
+
+
+
