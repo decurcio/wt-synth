@@ -263,7 +263,7 @@ void *usb(void *args)
 				printf("INSTRUMENT NOT FOUND, DEFAULT TO SINE WAVE");
 				currentInstrument->numHarmonics = 1;
 				currentInstrument->harmonicMultiples[0] = 1;
-				currentInstrument->attenuationMultiples[0] = 1;
+				currentInstrument->attenuationMultiples[0] = 0.125;
 			}
 			config_mode = 0;
 			numNotesBeingPlayed = 0;
