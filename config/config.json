@@ -89,10 +89,60 @@
         0.03125
       ]
   },
-  "Clarinet (Maybe)": {
+  "Cello (Open)": {
       "attenuationvector1": 1,
       "num_harmonics1": 8,
       "midiValue": 56,
+      "harmonic_multiples1": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        7.0,
+        8.0
+      ],
+      "harmonic_attenuate1": [
+        1.0,
+        0.5,
+        0.11,
+        0.4,
+        0.22,
+        0.3,
+        0.43,
+        0.4
+      ]
+  },
+  "Cello (Fingered)": {
+      "attenuationvector1": 1,
+      "num_harmonics1": 8,
+      "midiValue": 58,
+      "harmonic_multiples1": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        7.0,
+        8.0
+      ],
+      "harmonic_attenuate1": [
+        1.0,
+        0.5,
+        0.07,
+        0.35,
+        0.09,
+        0.09,
+        0.1,
+        0.1
+      ]
+  },
+  "Clarinet (Maybe)": {
+      "attenuationvector1": 1,
+      "num_harmonics1": 8,
+      "midiValue": 60,
       "harmonic_multiples1": [
         0.586,
         1.0,
