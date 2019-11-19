@@ -26,7 +26,6 @@ typedef struct
     int R_cutoff;
 
 	float sustain_level;
-	float current_attenuation;
 
     //attenuation calculation values
     float A_lerp_mult;
@@ -47,6 +46,7 @@ typedef struct
 	int attenuation_vector;
 	int age;
 	enum note_state state;
+	float current_attenuation;
 } USB_data;
 
 typedef struct

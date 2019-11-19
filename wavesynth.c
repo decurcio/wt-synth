@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
         USB_data_array[i].attenuation_vector = 0;
         USB_data_array[i].age = 0;
         USB_data_array[i].state = off;
+        USB_data_array[i].current_attenuation = 1.0;
     }
 
     currentInstrument = instrumentArray[0];

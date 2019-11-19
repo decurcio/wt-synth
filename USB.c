@@ -41,7 +41,6 @@ void *usb(void *args)
 		envelope_array[i].R_cutoff = envelope_array[i].D_cutoff + 8000;
 
 		envelope_array[i].sustain_level = 0.9;
-		envelope_array[i].current_attenuation = 0.0;
 
 		envelope_array[i].A_lerp_mult = 1.0 / envelope_array[i].A_cutoff;
 		envelope_array[i].D_lerp_mult = 1.0 / (envelope_array[i].D_cutoff - envelope_array[i].A_cutoff);
@@ -176,6 +175,7 @@ void *usb(void *args)
 				USB_data[oldestNote].attenuation_vector = 0;
 				USB_data[oldestNote].age = numNotesBeingPlayed;
 				USB_data[oldestNote].state = A;
+				USB_data[oldestNote].current_attenuation = 1.0;
 				for (int k = 0; k < TOTAL_NUMBER_NOTES; k++)
 				{
 					if (k != slot)
@@ -193,6 +193,7 @@ void *usb(void *args)
 				USB_data[openNoteSlot].attenuation_vector = 0;
 				USB_data[openNoteSlot].age = ++numNotesBeingPlayed;
 				USB_data[openNoteSlot].state = A;
+				USB_data[openNoteSlot].current_attenuation = 1.0;
 			}
 			//printf("SLOT NUMBER %i\n", slot);
 			//printf("NUM CURRENT NOTES: %i\n", numNotesBeingPlayed);

@@ -43,13 +43,14 @@ void DDS(void *DDS_data_array, void *USB_data_array, int numHarmonics, short *wa
                 if (usb_data[current_note].attenuation_vector++ >= envelope->D_cutoff)
                 {
                     usb_data[current_note].state = S;
+                    usb_data[current_note].current_attenuation = envelope->sustain_level;
                 }
                 x = (usb_data[current_note].attenuation_vector - envelope->A_cutoff) * envelope->D_lerp_mult;
                 attenuation_multiple = envelope->sustain_level * (1.0 - x) + 1.0 * (x);
                 break;
 
             case S:
-                attenuation_multiple = envelope->current_attenuation -= 0.00001;
+                attenuation_multiple = usb_data[current_note].current_attenuation -= 0.00001;
                 if(attenuation_multiple < 0.005) usb_data[current_note].state = R;
                 break;
             case R:
@@ -61,7 +62,7 @@ void DDS(void *DDS_data_array, void *USB_data_array, int numHarmonics, short *wa
                 //attenuation_multiple = 0.9 - (float)((usb_data[current_note].attenuation_vector - D_cutoff) * 0.00002267);
                 //x = (usb_data[current_note].attenuation_vector - envelope->S_cutoff) * envelope->R_lerp_mult;
                 //attenuation_multiple = envelope->sustain_level * (envelope->sustain_level - x);
-                attenuation_multiple = envelope->current_attenuation -= 0.0001;
+                attenuation_multiple = usb_data[current_note].current_attenuation -= 0.0001;
                 if(attenuation_multiple < 0.0005)
                 {
                     usb_data[current_note].state = off;
