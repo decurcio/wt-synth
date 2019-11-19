@@ -26,6 +26,7 @@ typedef struct
     int R_cutoff;
 
 	float sustain_level;
+	float current_attenuation;
 
     //attenuation calculation values
     float A_lerp_mult;

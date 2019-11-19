@@ -37,10 +37,11 @@ void *usb(void *args)
 	{
 		envelope_array[i].A_cutoff = 1000;
 		envelope_array[i].D_cutoff = envelope_array[i].A_cutoff + 1000;
-		envelope_array[i].S_cutoff = envelope_array[i].D_cutoff;
+		envelope_array[i].S_cutoff = envelope_array[i].D_cutoff + 82000;
 		envelope_array[i].R_cutoff = envelope_array[i].D_cutoff + 8000;
 
 		envelope_array[i].sustain_level = 0.9;
+		envelope_array[i].current_attenuation = 0.0;
 
 		envelope_array[i].A_lerp_mult = 1.0 / envelope_array[i].A_cutoff;
 		envelope_array[i].D_lerp_mult = 1.0 / (envelope_array[i].D_cutoff - envelope_array[i].A_cutoff);
