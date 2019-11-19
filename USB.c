@@ -48,6 +48,7 @@ void *usb(void *args)
 	}
 	//The default instrument is 0
 	*currentInstrument = instrumentArray[0];
+	*envelope = envelope_array[1];
 	printf("Current instrument: %s\n", currentInstrument->name);
 	//The current number of notes being played
 	int numNotesBeingPlayed = 0;
